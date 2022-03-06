@@ -1,6 +1,6 @@
 # Tic-tac-toe
 
-Trying to make a Tic-tac-toe game with the language I am learning
+First game i tried to make with python.
 
 ## How do you play the game?
 
