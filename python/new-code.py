@@ -36,6 +36,14 @@ def get_board_list_values() -> list:
 
     return board_list_values
 
+def board_full(board_list_values) -> bool:
+    for row_values in board_list_values:
+        for value in row_values:
+            if value:
+                return False
+
+    return True
+
 
 # Show the homescreen
 class homescreen:
@@ -154,7 +162,15 @@ class game:
         if board_list_values[0][2] and board_list_values[0][2] == board_list_values[1][1] == board_list_values[0][2]:
             self.game_won()
 
+
+        if board_full(board_list_values):
+            self.game_tie()
+
+
     def game_won(self):
+        self.frame.destroy()
+
+    def game_tie(self):
         self.frame.destroy()
 
 
