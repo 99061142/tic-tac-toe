@@ -28,9 +28,18 @@ board_list = [
 player = tk.StringVar() # Player that has the turn
 
 
+def get_board_list_values() -> list:
+    board_list_values = []
+
+    for row_values in board_list:
+        board_list_values.append([value.get() for value in row_values])
+
+    return board_list_values
+
+
 # Show the homescreen
 class homescreen:
-    def __init__(self, master) -> None:
+    def __init__(self, master):
         self.master = master # Master window
         self.frame = tk.Frame(self.master) # Makes a new frame inside the master window
 
@@ -64,18 +73,20 @@ class homescreen:
         self.frame.pack() # Add the frame to the window
 
 
-    def chose_starting_player(self) -> None:
+    def chose_starting_player(self):
         chosen_player = player.get().upper() # Input of the user
 
         # If the user chose "x" or "o" as starting player
         if chosen_player == "X" or chosen_player == "O":
+            player.set(player.get().upper()) # Uppercase the player the user chose
+
             self.frame.destroy() # Destroy the frame of the homescreen
-            board(window) # Show the board
+            game(window) # Show the board
 
 
 # Show the board
-class board:
-    def __init__(self, master) -> None:
+class game:
+    def __init__(self, master):
         self.master = master # Master window
         self.frame = tk.Frame(self.master) # Makes a new frame inside the master window
 
@@ -111,6 +122,40 @@ class board:
         # If the tile is empty
         if not value:
             board_list[row][col].set(player.get()) # Set the value to the player that has the turn
+
+            self.switch_player()
+
+    def switch_player(self):
+        # Switch the players turn
+        player.set("X" if player.get() == "O" else "O")
+
+        self.check_board()
+
+    def check_board(self):
+        board_list_values = get_board_list_values()
+
+        # Check every horizontal line
+        for row_values in board_list_values:
+            # If every horizontal value is the same
+            if row_values[0] and all(value == row_values[0] for value in row_values):
+                self.game_won()
+
+        # Check every vertical line
+        for col in range(3):
+            # If every vertical value is the same
+            if board_list_values[0][col] and board_list_values[0][col] == board_list_values[1][col] == board_list_values[2][col]: 
+                self.game_won()
+
+        # Check left top to bottom right if the value is the same
+        if board_list_values[0][0] and board_list_values[0][0] == board_list_values[1][1] == board_list_values[2][2]:
+            self.game_won()
+
+        # Check bottom right to right top if the value is the same
+        if board_list_values[0][2] and board_list_values[0][2] == board_list_values[1][1] == board_list_values[0][2]:
+            self.game_won()
+
+    def game_won(self):
+        self.frame.destroy()
 
 
 def main():
