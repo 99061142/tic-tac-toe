@@ -6,7 +6,24 @@ window = tk.Tk()
 window.title('Tic-Tac-Toe')
 window.configure(bg="lightgray")
 
-board_list = [[tk.StringVar()] * 3] * 3 # Board with the values inside
+# Board with the values inside
+board_list = [
+    [
+        tk.StringVar(),
+        tk.StringVar(),
+        tk.StringVar()
+    ],
+    [
+        tk.StringVar(),
+        tk.StringVar(),
+        tk.StringVar()
+    ],
+    [
+        tk.StringVar(),
+        tk.StringVar(),
+        tk.StringVar()
+    ]
+]
 
 player = tk.StringVar() # Player that has the turn
 
@@ -69,29 +86,31 @@ class board:
             font=("Arial", 25)
         ).grid(columnspan=3)
 
-        self.create_board()
+        self.create_board() # Add the board to the frame
 
         self.frame.pack() # Add the frame to the window
 
     def create_board(self) -> None:
         # For every tile inside the board (3x3)
-        for row_index, row in enumerate(board_list):
-            for col_index, value in enumerate(row):
+        for row, row_values in enumerate(board_list):
+            for col, value in enumerate(row_values):
                 # Makes the tile
-                tile = tk.Button(
+                test = tk.Button(
                     self.frame, 
                     borderwidth=2,
                     relief="groove",
-                    text=value.get(),
+                    textvariable=value,
                     width=35,
                     height=10,
-                    command= lambda: self.tile_pressed(value.get())
-                ).grid(row=row_index+1, column=col_index)
+                    command=lambda value=value.get(), row=row, col=col: self.tile_pressed(value, row, col)
+                )
+                
+                test.grid(row=row+1, column=col)
 
-    def tile_pressed(self, value):
-        # Tile is empty
+    def tile_pressed(self, value, row, col):
+        # If the tile is empty
         if not value:
-            pass
+            board_list[row][col].set(player.get()) # Set the value to the player that has the turn
 
 
 def main():
