@@ -57,8 +57,7 @@ def board_full(board_list_values) -> bool:
 # Show the homescreen
 class homescreen:
     def __init__(self):
-        self.master = window # Master window
-        self.frame = tk.Frame(self.master) # Makes a new frame inside the master window
+        self.frame = tk.Frame(window) # Makes a new frame inside the window
 
         # Question
         tk.Label(
@@ -97,8 +96,7 @@ class homescreen:
 # Show the board
 class game:
     def __init__(self):
-        self.master = window # Master window
-        self.frame = tk.Frame(self.master) # Makes a new frame inside the master window
+        self.frame = tk.Frame(window) # Makes a new frame inside the window
 
         # For every tile inside the board (3x3)
         for row, row_values in enumerate(board_list):
@@ -121,7 +119,7 @@ class game:
         if not board_list[row][col].get():
             board_list[row][col].set(player.get()) # Set the value to the player that has the turn
 
-            self.switch_player()
+            self.switch_player() # Switch the players turn
 
     def switch_player(self):
         player.set("X" if player.get() == "O" else "O") # Switch the players turn
@@ -136,28 +134,34 @@ class game:
             # If every horizontal value is the same
             if row_values[0] and all(value == row_values[0] for value in row_values):
                 self.game_won(row_values[0])
+                return
 
         # Check every vertical line
         for col in range(3):
             # If every vertical value is the same
             if board_list_values[0][col] and board_list_values[0][col] == board_list_values[1][col] == board_list_values[2][col]: 
                 self.game_won(board_list_values[0][col])
+                return
 
         # Check left top to bottom right if the value is the same
         if board_list_values[0][0] and board_list_values[0][0] == board_list_values[1][1] == board_list_values[2][2]:
             self.game_won(board_list_values[0][0])
+            return
 
-        # Check bottom right to right top if the value is the same
-        if board_list_values[0][2] and board_list_values[0][2] == board_list_values[1][1] == board_list_values[0][2]:
+        # Check bottom left to right top if the value is the same
+        if board_list_values[2][0] and board_list_values[2][0] == board_list_values[1][1] == board_list_values[0][2]:
             self.game_won(board_list_values[0][2])
+            return
 
         # If the board is full and nobody won
         if board_full(board_list_values):
             self.game_tie()
+            return
 
     def game_won(self, player_won):
         self.frame.destroy() # Delete the board
         endscreen().won(player_won) # Show the player that has won the game
+        return
 
     def game_tie(self):
         self.frame.destroy() # Delete the board
@@ -166,29 +170,28 @@ class game:
 
 class endscreen:
     def __init__(self):
-        self.master = window # Master window
-        self.frame = tk.Frame(self.master) # Makes a new frame inside the master window
+        self.frame = tk.Frame(window) # Makes a new frame inside the window
         self.frame.pack() # Add the frame to the window
     
     def won(self, player):
         text = f"Player \"{player}\" has won the game" # Text who won the game
-        bg = "green" # Background color
+        text_color = "green" # Background color
 
-        self.show_game_over(text, bg)
+        self.show_game_over(text, text_color)
 
     def tie(self):
         text = "The game is a tie" # Text that the game is a tie
-        bg = "red" # Background color
+        text_color = "red" # Background color
 
-        self.show_game_over(text, bg)
+        self.show_game_over(text, text_color)
 
-    def show_game_over(self, text, bg):
+    def show_game_over(self, text, text_color):
         # Text that shows if someone won the game, or that the game is a tie
         tk.Label(
             self.frame, 
             text=text, 
             font=("Arial", 25),
-            fg=bg
+            fg=text_color
         ).grid()
 
 
